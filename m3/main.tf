@@ -22,11 +22,18 @@ data "aws_ssm_parameter" "ami" {
 resource "aws_vpc" "vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
+  instance_tenancy = "default"
+  tags = {
+    Name = "manish"
+  }
 
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
+  tags = {
+    Name = "manish"
+  }
 
 }
 
@@ -34,6 +41,10 @@ resource "aws_subnet" "subnet1" {
   cidr_block              = "10.0.0.0/24"
   vpc_id                  = aws_vpc.vpc.id
   map_public_ip_on_launch = true
+
+  tags = {
+    Name = "manish"
+  }
 }
 
 # ROUTING #
@@ -44,6 +55,11 @@ resource "aws_route_table" "rtb" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
+
+tags = {
+    Name = "manish"
+  }
+
 }
 
 resource "aws_route_table_association" "rta-subnet1" {
@@ -72,6 +88,9 @@ resource "aws_security_group" "nginx-sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = {
+    Name = "manish"
+  }
 }
 
 # INSTANCES #
@@ -80,6 +99,10 @@ resource "aws_instance" "nginx1" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.subnet1.id
   vpc_security_group_ids = [aws_security_group.nginx-sg.id]
+
+tags = {
+    Name = "manish"
+  }
 
   user_data = <<EOF
 #! /bin/bash
